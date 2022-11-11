@@ -1,25 +1,65 @@
 ---
-title: "p8105_hw5_ew2718"
+title: "Homework 5"
 author: "Emma Warshaw"
 date: "2022-11-10"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(rvest)
+library(httr)
 ```
 
-## R Markdown
+## Problem 2
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+The Washington Post has gathered data on homicides in 50 large U.S. cities and made the data available through a GitHub repository here. You can read their accompanying article here.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Describe the raw data. Create a city_state variable (e.g. “Baltimore, MD”) and then summarize within cities to obtain the total number of homicides and the number of unsolved homicides (those for which the disposition is “Closed without arrest” or “Open/No arrest”).
 
-```{r cars}
-summary(cars)
+*The resulting data frame `homicide_data` has 12 columns and just over 52,000 rows.  The variables include uid, reported date, victim's first and last name, age, sex, city, state, latitude and longitude of the murder, and the disposition of the case.*
+
+*I'm first grouping by `city_state` to get a summary of total homicides per city. Then, I'll isolate for cases that are marked as "Closed without arrest" or "Open/No arrest" in a second structure.*
+
+```{r}
+homicide_data = read_csv("https://raw.githubusercontent.com/washingtonpost/data-homicides/master/homicide-data.csv")
+
+my_homicide_df = homicide_data %>%
+    mutate(
+    city_state = str_c(city, state, sep = ",")
+  ) 
+
+my_homicide_df %>%
+  group_by(city_state) %>% 
+  summarise(total_homicide = n())
+
+
+my_homicide_df %>%
+  group_by(city_state) %>% 
+  filter(disposition %in% c("Closed without arrest", "Open/No arrest")) %>%
+  summarise(unsolved = n())
 ```
 
-## Including Plots
+For the city of Baltimore, MD, use the prop.test function to estimate the proportion of homicides that are unsolved; save the output of prop.test as an R object, apply the broom::tidy to this object and pull the estimated proportion and confidence intervals from the resulting tidy dataframe.
+
+*From the last two summaries, we see that there were 2827 total homicides in Baltimore and 1825 of those went unsolved.  We can run a `prop.test` with this information.* 
+
+```{r}
+baltimore_prop = prop.test(1825, 2827, p = NULL, conf.level = 0.95, correct = TRUE) %>% 
+  broom::tidy() %>%
+  select(estimate, p.value, conf.low, conf.high)
+```
+
+Now run prop.test for each of the cities in your dataset, and extract both the proportion of unsolved homicides and the confidence interval for each. Do this within a “tidy” pipeline, making use of purrr::map, purrr::map2, list columns and unnest as necessary to create a tidy dataframe with estimated proportions and CIs for each city.
+
+```{r}
+
+```
+
+Create a plot that shows the estimates and CIs for each city – check out geom_errorbar for a way to add error bars based on the upper and lower limits. Organize cities according to the proportion of unsolved homicides.
+
+## Problem 3
 
 You can also embed plots, for example:
 
