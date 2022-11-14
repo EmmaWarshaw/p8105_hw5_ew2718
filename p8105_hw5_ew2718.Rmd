@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(rvest)
 library(httr)
+library(purrr)
 ```
 
 ## Problem 2
@@ -61,17 +62,15 @@ save(baltimore_prop, file = "baltimore_prop")
 
 Now run prop.test for each of the cities in your dataset, and extract both the proportion of unsolved homicides and the confidence interval for each. Do this within a “tidy” pipeline, making use of purrr::map, purrr::map2, list columns and unnest as necessary to create a tidy dataframe with estimated proportions and CIs for each city.
 
-*I'm going to combine the two tibbles I created earlier into one data frame.  Then, I'm going to write a function to do `prop.test`.  After, I'll apply the function to the data frame using mapping.* 
+*I'm going to combine the two tibbles I created earlier into one data frame.  Then, I'll use mapping to apply the `prop.test` to each city in the data set.* 
 
 ```{r}
-homicide_props = left_join(unsolved_homicide, total_homicide, by = "city_state") %>%
-  list(c("city_state")) %>% 
-  list(c("unsolved")) %>%
-  list(c("all_homicide")) %>%
-  purrr::map2("unsolved","all_homicide", prop.test) %>%
-  
-```
+homicide_props = left_join(unsolved_homicide, total_homicide, by = "city_state")
 
+each_city = map2(homicide_props$unsolved, homicide_props$all_homicide, ~prop.test(.x, .y)) 
+```
+  tibble::enframe() %>% 
+  
 Create a plot that shows the estimates and CIs for each city – check out geom_errorbar for a way to add error bars based on the upper and lower limits. Organize cities according to the proportion of unsolved homicides.
 
 ```{r}
