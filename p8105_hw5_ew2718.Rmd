@@ -65,11 +65,16 @@ Now run prop.test for each of the cities in your dataset, and extract both the p
 *I'm going to combine the two tibbles I created earlier into one data frame.  Then, I'll use mapping to apply the `prop.test` to each city in the data set.* 
 
 ```{r}
-homicide_props = left_join(unsolved_homicide, total_homicide, by = "city_state")
+homicide_props = merge(unsolved_homicide, total_homicide, by = "city_state")
 
-each_city = map2(homicide_props$unsolved, homicide_props$all_homicide, ~prop.test(.x, .y)) 
+each_city = homicide_props %>%
+  mutate(
+    props = map2(homicide_props$unsolved, homicide_props$all_homicide, prop.test),
+    props = map(props, broom::tidy),
+    props = map(props, ~select(.x, estimate, starts_with("conf")))
+  ) %>%
+  unnest(cols = c(props))
 ```
-  tibble::enframe() %>% 
   
 Create a plot that shows the estimates and CIs for each city – check out geom_errorbar for a way to add error bars based on the upper and lower limits. Organize cities according to the proportion of unsolved homicides.
 
