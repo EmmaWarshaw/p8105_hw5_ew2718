@@ -116,7 +116,7 @@ sim_function = function(n = 30, mu, sigma = 5) {
 output = tibble()
 
 for (i in 1:5000) {
-  output[[i]] = bind_rows(output, sim_function(mu = 0))
+  output = bind_rows(output, sim_function(mu = 0))
 }
 
 mu0 = output 
@@ -129,46 +129,58 @@ t_test_mu0 = mu0 %>%
 Repeat the above for μ={1,2,3,4,5,6}, and complete the following:
 ```{r}
 ##Mu = 1
+output_1 = tibble()
+
 for (i in 1:5000) {
-  output[[i]] = bind_rows(output, sim_function(mu = 1))
+  output_1 = bind_rows(output_1, sim_function(mu = 1))
 }
 
-mu1 = output
+mu1 = output_1
 
 ## mu = 2
+output_2 = tibble()
+
 for (i in 1:5000) {
-  output[[i]] = bind_rows(output, sim_function(mu = 2))
+  output_2 = bind_rows(output_2, sim_function(mu = 2))
 }
 
-mu2 = output
+mu2 = output_2
 
 ## mu = 3
+output_3 = tibble()
+
 for (i in 1:5000) {
-  output[[i]] = bind_rows(output, sim_function(mu = 3))
+  output_3 = bind_rows(output_3, sim_function(mu = 3))
 }
 
-mu3 = output
+mu3 = output_3
 
 ## mu = 4
+output_4 = tibble()
+
 for (i in 1:5000) {
-  output[[i]] = bind_rows(output, sim_function(mu = 4))
+  output_4 = bind_rows(output_4, sim_function(mu = 4))
 }
 
-mu4 = output
+mu4 = output_4
 
 ## mu = 5
+output_5 = tibble()
+
 for (i in 1:5000) {
-  output[[i]] = bind_rows(output, sim_function(mu = 5))
+  output_5 = bind_rows(output_5, sim_function(mu = 5))
 }
 
-mu5 = output
+mu5 = output_5
 
 ## mu = 6
+output_6 = tibble()
+
 for (i in 1:5000) {
-  output[[i]] = bind_rows(output, sim_function(mu = 6))
+  output_6 = bind_rows(output_6, sim_function(mu = 6))
 }
 
-mu6 = output
+mu6 = output_6
 
 ```
 
