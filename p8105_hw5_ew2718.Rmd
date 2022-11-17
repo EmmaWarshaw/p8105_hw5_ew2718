@@ -109,86 +109,66 @@ For each dataset, save μ̂ and the p-value arising from a test of H:μ=0 using 
 sim_function = function(n = 30, mu, sigma = 5) {
   sim_data = 
     tibble(
-      x = rnorm(n, mu, sigma),)
-      
-  sim_data %>%
-    summarise(
-      n = x
-    )}
-
-output = vector("list", length = 5000)
-
-for (i in 1:5000) {
-  output[[i]] = sim_function(mu = 0)
+      x = list(rnorm(n, mu, sigma)))
+    return(sim_data)
 }
 
-sim_results_mu0 = bind_rows(output)
+output = tibble()
+
+for (i in 1:5000) {
+  sim_results_mu0[[i]] = bind_rows(output, sim_function(mu = 0))
+}
 
 t_test_mu0 = sim_results_mu0 %>%
+  as.numeric(sim_results_mu0$x) %>% 
   mutate(
-    map(n, t.test), 
-    map(broom::tidy), 
-    map(~select(.x, estimate, p.value) 
-  ))
+    t_test_res = map(.x = x, ~t.test(.x) %>% 
+                       broom::tidy()))
 ```
     
 Repeat the above for μ={1,2,3,4,5,6}, and complete the following:
 ```{r}
 ##Mu = 1
-output = vector("list", length = 5000)
-
-for (i in 1:5000) {
-  output[[i]] = sim_function(mu = 1)
+sim_function = function(n = 30, mu, sigma = 5) {
+  sim_data = 
+    tibble(
+      x = list(rnorm(n, mu, sigma)))
+    return(sim_data)
 }
 
-sim_results_mu1 = bind_rows(output)
+output = tibble()
+
+for (i in 1:5000) {
+  sim_results_mu1[[i]] = bind_rows(output, sim_function(mu = 1))
+}
 
 ## mu = 2
-
-output = vector("list", length = 5000)
-
 for (i in 1:5000) {
-  output[[i]] = sim_function(mu = 2)
+  sim_results_mu2[[i]] = bind_rows(output, sim_function(mu = 2))
 }
-
-sim_results_mu2 = bind_rows(output)
 
 
 ## mu = 3
-output = vector("list", length = 5000)
-
 for (i in 1:5000) {
-  output[[i]] = sim_function(mu = 3)
+  sim_results_mu3[[i]] = bind_rows(output, sim_function(mu = 3))
 }
 
-sim_results_mu3 = bind_rows(output)
 
 ## mu = 4
-output = vector("list", length = 5000)
-
 for (i in 1:5000) {
-  output[[i]] = sim_function(mu = 4)
+  sim_results_mu4[[i]] = bind_rows(output, sim_function(mu = 4))
 }
-
-sim_results_mu4 = bind_rows(output)
 
 ## mu = 5
-output = vector("list", length = 5000)
-
 for (i in 1:5000) {
-  output[[i]] = sim_function(mu = 5)
+  sim_results_mu5[[i]] = bind_rows(output, sim_function(mu = 5))
 }
-
-sim_results_mu5 = bind_rows(output)
 
 ## mu = 6
-output = vector("list", length = 5000)
-
 for (i in 1:5000) {
-  output[[i]] = sim_function(mu = 6)
+  sim_results_mu6[[i]] = bind_rows(output, sim_function(mu = 6))
 }
 
-sim_results_mu6 = bind_rows(output)
 ```
 
 
