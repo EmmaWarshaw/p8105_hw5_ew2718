@@ -116,58 +116,66 @@ sim_function = function(n = 30, mu, sigma = 5) {
 output = tibble()
 
 for (i in 1:5000) {
-  sim_results_mu0[[i]] = bind_rows(output, sim_function(mu = 0))
+  output[[i]] = bind_rows(output, sim_function(mu = 0))
 }
 
-t_test_mu0 = sim_results_mu0 %>%
-  as.numeric(sim_results_mu0$x) %>% 
-  mutate(
-    t_test_res = map(.x = x, ~t.test(.x) %>% 
-                       broom::tidy()))
+mu0 = output 
+
+t_test_mu0 = mu0 %>%
+  t_test_res = map(.x = x, ~t.test(.x) %>% broom::tidy)
+
 ```
+t_test_mu0 = mu0 %>%
+  mutate(
+    t_test_res = map(x, t.test))
     
+  mutate_all(funs(as.numeric(as.factor(.)))) %>% 
+  map(mu0, t.test) %>%
+  map(~select(.x, estimate, p-value))
+
 Repeat the above for μ={1,2,3,4,5,6}, and complete the following:
 ```{r}
 ##Mu = 1
-sim_function = function(n = 30, mu, sigma = 5) {
-  sim_data = 
-    tibble(
-      x = list(rnorm(n, mu, sigma)))
-    return(sim_data)
-}
-
-output = tibble()
-
 for (i in 1:5000) {
-  sim_results_mu1[[i]] = bind_rows(output, sim_function(mu = 1))
+  output[[i]] = bind_rows(output, sim_function(mu = 1))
 }
+
+mu1 = output
 
 ## mu = 2
 for (i in 1:5000) {
-  sim_results_mu2[[i]] = bind_rows(output, sim_function(mu = 2))
+  output[[i]] = bind_rows(output, sim_function(mu = 2))
 }
 
+mu2 = output
 
 ## mu = 3
 for (i in 1:5000) {
-  sim_results_mu3[[i]] = bind_rows(output, sim_function(mu = 3))
+  output[[i]] = bind_rows(output, sim_function(mu = 3))
 }
 
+mu3 = output
 
 ## mu = 4
 for (i in 1:5000) {
-  sim_results_mu4[[i]] = bind_rows(output, sim_function(mu = 4))
+  output[[i]] = bind_rows(output, sim_function(mu = 4))
 }
+
+mu4 = output
 
 ## mu = 5
 for (i in 1:5000) {
-  sim_results_mu5[[i]] = bind_rows(output, sim_function(mu = 5))
+  output[[i]] = bind_rows(output, sim_function(mu = 5))
 }
+
+mu5 = output
 
 ## mu = 6
 for (i in 1:5000) {
-  sim_results_mu6[[i]] = bind_rows(output, sim_function(mu = 6))
+  output[[i]] = bind_rows(output, sim_function(mu = 6))
 }
+
+mu6 = output
 
 ```
 
